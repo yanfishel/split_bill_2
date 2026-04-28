@@ -1,79 +1,90 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# SplitBill 0.2
 
-# Getting Started
+SplitBill is a mobile application built with **React Native** and **Expo** designed to simplify the process of splitting restaurant bills among friends. It uses OCR (Optical Character Recognition) to read receipts and provides an intuitive interface for assigning items to participants.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## 🚀 Key Features
 
-## Step 1: Start the Metro Server
+*   **Receipt Scanning**: Use your camera to take a photo of a receipt.
+*   **Intelligent OCR Parsing**: Automatically extracts restaurant names, items, prices, and totals from receipt images.
+*   **Manual Correction**: Review and edit parsed items to ensure 100% accuracy.
+*   **Effortless Assignment**: Tap participant avatars to assign bill items. Costs are automatically split for multi-person items.
+*   **Advanced Calculations**:
+    *   Percentage or fixed-amount tips.
+    *   Proportional or equal tip distribution.
+    *   Fixed-amount discounts.
+*   **Sharing Results**: Generate a clean text summary of who owes what and share it via your favorite messenger.
+*   **Persistent History**: Save your shared bills and participant groups locally using SQLite.
+*   **Type Safe**: 100% TypeScript implementation for a robust developer experience.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## 🛠 Technical Stack
 
-To start Metro, run the following command from the _root_ of your React Native project:
+*   **Framework**: [React Native](https://reactnative.dev/) with [Expo](https://expo.dev/) (Managed Workflow)
+*   **Navigation**: [React Navigation v6](https://reactnavigation.org/)
+*   **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+*   **Database**: [expo-sqlite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
+*   **OCR Engine**: [react-native-mlkit-ocr](https://github.com/agrousset/react-native-mlkit-ocr) (Google ML Kit)
+*   **Icons**: [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons)
+*   **Language**: [TypeScript](https://www.typescriptlang.org/)
 
-```bash
-# using npm
-npm start
+## 📁 Project Structure
 
-# OR using Yarn
-yarn start
+```text
+src/
+├── app/             # Navigation configuration and root providers
+├── components/      # Reusable UI components
+│   ├── bill/        # Components specific to bill processing
+│   ├── participant/ # Components for participant management
+│   └── ui/          # Generic UI primitives (Button, Input, Avatar)
+├── screens/         # Main application screens
+├── services/        # External services
+│   ├── database/    # SQLite initialization and repositories
+│   └── ocr/         # OCR logic and parsing algorithms
+├── store/           # Zustand state stores
+├── types/           # TypeScript interfaces and definitions
+└── utils/           # Helper functions (calculations, colors, logger)
 ```
 
-## Step 2: Start your Application
+## 🚀 Getting Started
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+### Prerequisites
 
-### For Android
+*   Node.js (v18 or higher)
+*   npm or yarn
+*   Expo Go app on your physical device (for testing OCR and Camera)
+
+### Installation
+
+1.  **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd split_bill_2
+    ```
+
+2.  **Install dependencies**:
+    ```bash
+    npm install --legacy-peer-deps
+    ```
+
+3.  **Start the project**:
+    ```bash
+    npm start
+    ```
+
+4.  **Run on a simulator/device**:
+    *   Press `i` for iOS simulator.
+    *   Press `a` for Android emulator.
+    *   Scan the QR code with your phone's camera (iOS) or Expo Go app (Android) to run on a physical device.
+
+## ⚠️ Important Note on OCR
+
+The OCR functionality requires native modules provided by `react-native-mlkit-ocr`. While the app structure and navigation work in the standard **Expo Go** app, full OCR testing on a physical device or simulator may require a **Development Build**:
 
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+npx expo run:ios
+# or
+npx expo run:android
 ```
 
-### For iOS
+## 📄 License
 
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
