@@ -1,17 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, Share } from 'react-native';
-import { useBillStore } from '../store/useBillStore';
-import { useParticipantStore } from '../store/useParticipantStore';
-import { calculateParticipantTotal } from '../utils/calculations';
-import { Avatar } from '../components/ui/Avatar';
-import { Button } from '../components/ui/Button';
-import { useNavigation } from '@react-navigation/native';
-import { billRepository } from '../services/database/billRepository';
+import { useBillStore } from '../../store/useBillStore';
+import { useParticipantStore } from '../../store/useParticipantStore';
+import { calculateParticipantTotal } from '../../utils/calculations';
+import { Avatar } from '../../components/ui/Avatar';
+import { Button } from '../../components/ui/Button';
+import { Stack, useRouter } from 'expo-router';
+import { billRepository } from '../../services/database/billRepository';
+import { Colors } from '../../constants/Theme';
 
-export const SummaryScreen = () => {
+export default function SummaryScreen() {
   const { currentBill, resetCurrentBill } = useBillStore();
   const { sessionParticipants, clearSession } = useParticipantStore();
-  const navigation = useNavigation<any>();
+  const router = useRouter();
 
   if (!currentBill) return null;
 
@@ -31,7 +32,6 @@ export const SummaryScreen = () => {
   };
 
   const handleFinish = async () => {
-    // Save to History before resetting
     if (currentBill) {
       await billRepository.save({
         ...currentBill,
@@ -41,26 +41,26 @@ export const SummaryScreen = () => {
 
     resetCurrentBill();
     clearSession();
-    navigation.popToTop();
+    router.dismissAll();
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Stack.Screen options={{ title: 'Итоги', headerLargeTitle: true }} />
       <View style={styles.container}>
-        <Text style={styles.title}>Итоги</Text>
-
-        <ScrollView style={styles.list}>
+        <ScrollView style={styles.list} contentInsetAdjustmentBehavior="automatic">
           {results.map((r) => (
             <View key={r.participant.id} style={styles.card}>
               <View style={styles.cardHeader}>
-                <Avatar name={r.participant.name} color={r.participant.avatarColor} />
-                <Text style={styles.participantName}>{r.participant.name}</Text>
+                <Avatar name={r.participant.name} color={r.participant.avatarColor} size={44} />
+                <View style={styles.headerText}>
+                  <Text style={styles.participantName}>{r.participant.name}</Text>
+                  <Text style={styles.detailText}>
+                    Позиции: {r.subtotal.toFixed(2)} ₽
+                    {r.tip > 0 && ` • Чаевые: ${r.tip.toFixed(2)} ₽`}
+                  </Text>
+                </View>
                 <Text style={styles.participantTotal}>{r.total.toFixed(2)} ₽</Text>
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailText}>Позиции: {r.subtotal.toFixed(2)} ₽</Text>
-                {r.tip > 0 && <Text style={styles.detailText}>Чаевые: {r.tip.toFixed(2)} ₽</Text>}
-                {r.discount > 0 && <Text style={styles.detailText}>Скидка: -{r.discount.toFixed(2)} ₽</Text>}
               </View>
             </View>
           ))}
@@ -73,35 +73,32 @@ export const SummaryScreen = () => {
       </View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#F2F2F7' },
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  safeArea: { flex: 1, backgroundColor: Colors.surface },
+  container: { flex: 1, paddingHorizontal: 16 },
   list: { flex: 1 },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: Colors.background,
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  participantName: { flex: 1, marginLeft: 12, fontSize: 18, fontWeight: '600' },
-  participantTotal: { fontSize: 18, fontWeight: 'bold', color: '#007AFF' },
-  details: {
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#F2F2F7',
+  headerText: {
+    flex: 1,
+    marginLeft: 16,
   },
-  detailText: { fontSize: 14, color: '#8E8E93', marginBottom: 2 },
+  participantName: { fontSize: 18, fontWeight: '700', color: Colors.text },
+  detailText: { fontSize: 13, color: Colors.secondaryText, marginTop: 2 },
+  participantTotal: { fontSize: 18, fontWeight: 'bold', color: Colors.primary },
   footer: {
-    paddingTop: 16,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: Colors.separator,
   },
 });

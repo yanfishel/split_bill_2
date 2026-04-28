@@ -1,21 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { useBillStore } from '../store/useBillStore';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { useBillStore } from '../../store/useBillStore';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Stack, useRouter } from 'expo-router';
+import { Colors } from '../../constants/Theme';
 
-export const TipScreen = () => {
+export default function TipScreen() {
   const { currentBill, setTip, setDiscount } = useBillStore();
-  const navigation = useNavigation<any>();
+  const router = useRouter();
 
   if (!currentBill) return null;
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Дополнительно</Text>
-
+      <Stack.Screen options={{ title: 'Дополнительно', headerLargeTitle: true }} />
+      <ScrollView style={styles.container} contentInsetAdjustmentBehavior="automatic">
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Чаевые (%)</Text>
           <View style={styles.chipRow}>
@@ -64,37 +64,40 @@ export const TipScreen = () => {
             keyboardType="numeric"
           />
         </View>
+      </ScrollView>
 
-        <View style={styles.footer}>
-          <Button title="Посчитать итоги" onPress={() => navigation.navigate('Summary')} />
-        </View>
+      <View style={styles.footer}>
+        <Button title="Посчитать итоги" onPress={() => router.push('/new-bill/summary')} />
       </View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#F2F2F7' },
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 24 },
-  section: { marginBottom: 30 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', color: '#8E8E93', marginBottom: 12 },
+  safeArea: { flex: 1, backgroundColor: Colors.surface },
+  container: { flex: 1, paddingHorizontal: 16 },
+  section: { marginBottom: 32, marginTop: 10 },
+  sectionTitle: { fontSize: 16, fontWeight: '600', color: Colors.secondaryText, marginBottom: 12 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap' },
   chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 22,
+    backgroundColor: Colors.secondary,
     borderWidth: 1,
-    borderColor: '#C7C7CC',
+    borderColor: Colors.separator,
     marginRight: 10,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   chipActive: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
-  chipText: { fontSize: 14, color: '#000' },
-  chipTextActive: { color: '#fff' },
-  footer: { flex: 1, justifyContent: 'flex-end' },
+  chipText: { fontSize: 15, color: Colors.text },
+  chipTextActive: { color: '#fff', fontWeight: '600' },
+  footer: {
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: Colors.separator,
+  },
 });
